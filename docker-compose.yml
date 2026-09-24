@@ -1,0 +1,27 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: auditgraph-falkordb
+    restart: unless-stopped
+    ports:
+      - "6381:6379"   # cypher
+      - "6382:6380"   # bolt
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -p 6379 ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: auditgraph-api
+    restart: unless-stopped
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    environment:
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+      # ETHERSCAN_API_KEY: xxx   # optional, for the /api/ingest/etherscan endpoint
+    ports:
+      - "8000:8000"

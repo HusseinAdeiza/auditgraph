@@ -1,0 +1,17 @@
+# node
+node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# runtime
+reports/
+video/
+
+# env
+.env
+.env.local
