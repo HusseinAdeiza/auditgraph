@@ -1,0 +1,8 @@
+fastapi>=0.111
+uvicorn[standard]>=0.30
+httpx>=0.27
+falkordb>=0.4
+reportlab>=4.1
+python-multipart>=0.0.9
+networkx>=3.2
+numpy>=1.26
