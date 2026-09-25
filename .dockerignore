@@ -1,0 +1,10 @@
+.git
+.venv
+video/
+reports/
+.env
+docs
+README.md
+build_history.sh
+frontend/node_modules
+frontend/dist
