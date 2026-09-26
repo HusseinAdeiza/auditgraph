@@ -28,6 +28,7 @@ export default function App() {
   const [selected, setSelected] = useState<any>(null);
   const [reportQueries, setReportQueries] = useState<QueryResult[]>([]);
   const [reportContract, setReportContract] = useState("full graph");
+  const [reportStatus, setReportStatus] = useState("");
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
 
@@ -204,13 +205,17 @@ export default function App() {
             </div>
             <button
               onClick={() => {
-                const q = reportQueries.map((q) => ({ name: q.name, params: {} as Record<string, string> }));
-                reportPdf(reportContract, q, ["pagerank"]);
+                setReportStatus("generating…");
+                const q = reportQueries.map((q) => ({ name: q.name, params: q.params || {} }));
+                reportPdf(reportContract, q, ["pagerank"])
+                  .then(() => setReportStatus("report downloaded — check your downloads folder"))
+                  .catch(() => setReportStatus("report failed"));
               }}
-              disabled={reportQueries.length === 0}
+              disabled={reportQueries.length === 0 || reportStatus === "generating…"}
               className="mt-5 rounded bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-50">
               Generate & download PDF
             </button>
+            {reportStatus && <p className="mt-2 text-sm text-slate-600">{reportStatus}</p>}
           </div>
         )}
       </main>

@@ -7,6 +7,7 @@ export interface Template { id: string; name: string; description: string; param
 export interface QueryResult {
   name: string; title: string; columns: string[];
   rows: any[][]; count: number; cypher: string;
+  params?: Record<string, string | number>;
 }
 
 export async function getTemplates(): Promise<Template[]> {
@@ -27,7 +28,9 @@ export async function runQuery(name: string, params: Record<string, string | num
     body: JSON.stringify({ name, params: coerced }),
   });
   if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
-  return r.json();
+  const data = await r.json();
+  data.params = coerced; // carry the params actually used, so the PDF report re-runs faithfully
+  return data;
 }
 export async function getContracts(): Promise<{ name: string; chain: string; kind: string; protocol: string }[]> {
   const r = await fetch("/api/contracts"); return (await r.json()).contracts;
@@ -50,11 +53,14 @@ export async function runAlgo(algo: string, params: Record<string, any>): Promis
 export async function health(): Promise<any> {
   const r = await fetch("/api/health"); return r.json();
 }
-export function reportPdf(contract: string, queries: { name: string; params: Record<string, string> }[], algos: string[]): void {
-  const blob = fetch("/api/report/pdf", {
+export function reportPdf(contract: string, queries: { name: string; params: Record<string, string | number> }[], algos: string[]): Promise<void> {
+  return fetch("/api/report/pdf", {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ contract, queries, algorithms: algos }),
-  }).then((r) => r.blob()).then((b) => {
+  }).then((r) => {
+    if (!r.ok) throw new Error("report failed");
+    return r.blob();
+  }).then((b) => {
     const url = URL.createObjectURL(b);
     const a = document.createElement("a");
     a.href = url; a.download = `auditgraph_${contract.replace(/[^a-z0-9]/gi, "_")}.pdf`;
