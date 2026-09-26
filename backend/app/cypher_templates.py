@@ -67,7 +67,7 @@ TEMPLATES: list[dict] = [
     dict(
         id="library_risk_correlation",
         name="Library risk correlation",
-        description="KILLER QUERY: for each shared library, total real exploit loss across contracts that use it.",
+        description="For each shared library, total real exploit loss across the contracts that use it.",
         cypher="""
         MATCH (c:Contract)-[:USES_LIBRARY]->(l:Library)
         OPTIONAL MATCH (c)-[:HAS_FUNCTION]->(f)-[:HAS_VULNERABILITY]->(v)<-[:EXPLOITED]-(e:Exploit)
