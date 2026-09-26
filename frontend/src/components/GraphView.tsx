@@ -61,7 +61,15 @@ export default function GraphView({ data, onSelect, focus }: {
           },
         })),
       ],
-      layout: { name: "cose", animate: false, nodeRepulsion: 4500, idealEdgeLength: 90 } as any,
+      layout: data.nodes.length <= 60
+        ? {
+            name: "concentric", animate: false, randomize: false,
+            minNodeSpacing: 60, spacing: 24,
+            centerBy: (node: any) =>
+              (focus && node.data("name") === focus ? 0
+               : (node.data("label") === "Contract" ? 1 : 2)),
+          } as any
+        : { name: "cose", animate: false, nodeRepulsion: 4500, idealEdgeLength: 90 } as any,
       wheelSensitivity: 0.2,
     });
     cyRef.current = cy;
