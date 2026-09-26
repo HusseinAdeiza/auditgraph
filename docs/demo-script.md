@@ -23,7 +23,7 @@ Queries tab → **Contracts with vulnerability** → SWC = `SWC-106`
 > "Every contract flagged for oracle manipulation — with severity — in one
 > table. No grep through a dozen repos."
 
-## 1:30–2:10 — Query 2: the killer query
+## 1:30–2:10 — Query 2: library risk
 Queries tab → **Library risk correlation** → Run.
 > "Which libraries carry the most correlated real-world loss across protocols?
 > OpenZeppelin and Chainlink top the list because the exploits hit code that
