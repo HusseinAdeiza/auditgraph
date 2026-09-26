@@ -67,6 +67,44 @@ The API auto-seeds on startup if the graph is empty. Swagger at `/docs`.
 
 Set `ETHERSCAN_API_KEY` (free tier) for the Etherscan ingestion endpoint. Slither ingestion needs `slither` on PATH and a local Solidity path.
 
+## How to use
+
+Five tabs, one typical flow:
+
+1. **Graph** — the whole seeded graph loads here. Pick a contract from the "Focus" dropdown (e.g. `KyberSwapPool`) to zoom into its neighborhood: the contract, its functions, the vulnerable ones, attached exploits, and the libraries it uses. Click any node for its properties (address, severity, loss figure, …).
+2. **Queries** — the 8 templates as forms. A useful first pass:
+   - `Contracts with a vulnerability` → `swc = SWC-106` → every contract flagged for price/oracle manipulation, with severity
+   - `Library risk correlation` → no params → which libraries carry the most real-world loss across all protocols that use them
+   - `Cross-contract attack chain` → no params → 2–6 hop call paths that start at an exploited function and leave the protocol
+   Each result table is remembered and can be attached to a PDF report later.
+3. **Algorithms** — PageRank (where to look first), betweenness (bridge functions), WCC (how connected the graph is), label propagation (vulnerability communities), and shortest path between two functions.
+4. **Ingest** — add a live contract by Etherscan address, or run Slither over local Solidity to link static-analysis findings to the graph.
+5. **Report** — pick the report subject (contract name or "full graph"), confirm which queries to include, and hit **Generate & download PDF**. You get a formatted report with the query results, PageRank scores, and graph stats — the thing you'd attach to an engagement.
+
+API-only (skip the UI):
+
+```bash
+# run a template
+curl -X POST localhost:8000/api/query -H 'Content-Type: application/json' \
+  -d '{"name":"library_risk_correlation","params":{}}'
+
+# run an algorithm
+curl -X POST localhost:8000/api/algorithms/pagerank -H 'Content-Type: application/json' \
+  -d '{"params":{"top":15}}'
+
+# export a PDF
+curl -X POST localhost:8000/api/report/pdf -H 'Content-Type: application/json' \
+  -d '{"contract":"KyberSwapPool","queries":[{"name":"contracts_with_vulnerability","params":{"swc":"SWC-106"}}],"algorithms":["pagerank"]}' \
+  -o report.pdf
+```
+
+Raw Cypher against the DB itself (FalkorDB speaks Cypher directly, port 6381):
+
+```bash
+docker exec -it auditgraph-falkordb redis-cli -p 6379 GRAPH.QUERY audit \
+  "MATCH (c:Contract)-[:USES_LIBRARY]->(l:Library) RETURN c.name, l.name"
+```
+
 ## API
 
 - `GET /api/health` — liveness + node count
