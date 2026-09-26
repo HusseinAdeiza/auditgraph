@@ -13,7 +13,7 @@ Open **http://localhost:5173** (or `http://<host>:8000` in Docker).
 > "AuditGraph models a smart contract vulnerability knowledge graph in
 > FalkorDB — contracts, functions, SWC vulnerabilities, real exploits, and
 > libraries are nodes; calls, usage, and exploitation are edges. Today's graph:
-> 145 nodes, 222 edges — 24 contracts, 20 vulnerability patterns, 10 famous
+> 144 nodes, 222 edges — 23 contracts, 20 vulnerability patterns, 10 famous
 > exploits."
 - Point at the header badge: `graph: 144 nodes` (live from the DB).
 
@@ -45,7 +45,7 @@ Report tab → **Generate & download PDF**.
 > "Everything I just ran — queries, results, centrality scores — bundles into a
 > formatted PDF audit report, ready to attach to the engagement.
 >
-> **Proof metric for this build:** 24 contracts, 20 SWC patterns, 10 exploits
+> **Proof metric for this build:** 23 contracts, 20 SWC patterns, 10 exploits
 > ($1.7B+ in documented losses) analyzed; 8 Cypher templates; 5 graph
 > algorithms; live query-to-PDF in under 3 seconds."
 

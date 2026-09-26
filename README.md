@@ -6,15 +6,17 @@ Auditing is mostly tracing: who calls whom, which vulnerability patterns stack, 
 
 Built for Graph Hacks on FalkorDB.
 
+**Live demo:** [molecules-sacred-everyone-promotes.trycloudflare.com](https://molecules-sacred-everyone-promotes.trycloudflare.com) — the full app, seeded and queryable.
+
 ## What's in the graph
 
-- 24 contracts (Uniswap, Aave, Compound, Curve, Balancer, Maker, GMX, the bridge protocols, …)
-- ~70 functions with call edges between them
+- 23 contracts (Uniswap, Aave, Compound, Curve, Balancer, Maker, GMX, the bridge protocols, …)
+- 76 functions with call edges between them
 - 20 vulnerability patterns, aligned with the [SWC registry](https://swcregistry.io)
 - 10 real exploits (DAO, bZx, Cream, KyberSwap, Beanstalk, Euler, Mango, Ronin, Poly, Wormhole) with loss figures
 - 10 libraries (OpenZeppelin, Solmate, Chainlink, …)
 
-That's 145 nodes and 222 edges. The seed is deterministic — `python -m app.seed` rebuilds the same graph every time.
+That's 144 nodes and 222 edges. The seed is deterministic — `python -m app.seed` rebuilds the same graph every time.
 
 ## Queries
 
@@ -115,11 +117,11 @@ docker exec -it auditgraph-falkordb redis-cli -p 6379 GRAPH.QUERY audit \
 - `POST /api/ingest/etherscan` — `{address, chain_id?}` → contract node with verified/compiler/proxy status
 - `POST /api/ingest/slither` — `{source_path}` → findings linked as `Function—HAS_VULNERABILITY—Vulnerability`
 - `POST /api/report/pdf` — bundles the queries you ran + algorithms into a PDF
-- `POST /api/admin/reset` — re-seed from scratch
+- `POST /api/admin/reset` — re-seed from scratch (requires `AUDITGRAPH_ADMIN_TOKEN` header; off unless that env var is set, so a public demo can't be wiped by a stray call)
 
 ## Scope
 
-This is a seeded, curated graph of 24 protocols, not an indexer of all of Ethereum. The depth is in correlation and paths, not coverage. The ingestion endpoints are the seam for expanding it — point them at real addresses and repos and the graph grows without code changes.
+This is a seeded, curated graph of 23 protocols, not an indexer of all of Ethereum. The depth is in correlation and paths, not coverage. The ingestion endpoints are the seam for expanding it — point them at real addresses and repos and the graph grows without code changes.
 
 ## Notes
 

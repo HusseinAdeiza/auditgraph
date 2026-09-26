@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -225,7 +225,12 @@ def report_pdf(body: dict):
 
 
 @app.post("/api/admin/reset")
-def reset():
+def reset(x_admin_token: str = Header("")):
+    # Destructive: wipes and re-seeds the graph. Requires AUDITGRAPH_ADMIN_TOKEN
+    # to be set AND match, so a public demo can't be reset by a stray call.
+    expected = os.getenv("AUDITGRAPH_ADMIN_TOKEN", "")
+    if not expected or x_admin_token != expected:
+        raise HTTPException(403, "admin token required")
     res = seed(force=True)
     return res
 
