@@ -230,9 +230,12 @@ def reset():
     return res
 
 
-# Serve the built frontend if it's there (the Docker image ships it;
-# local dev uses the Vite proxy instead).
-_DIST = os.environ.get("AUDITGRAPH_DIST") or os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "..", "..", "frontend", "dist")
-if os.path.isdir(_DIST):
+# Serve the built frontend if it's there. The Docker image puts it one level
+# up (/app/app/main.py -> /app/frontend/dist); local dev is two levels up.
+_DIST = os.environ.get("AUDITGRAPH_DIST") or next(
+    (d for d in (
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend", "dist"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "frontend", "dist"),
+    ) if os.path.isdir(d)), None)
+if _DIST:
     app.mount("/", StaticFiles(directory=_DIST, html=True), name="frontend")

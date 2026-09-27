@@ -6,6 +6,8 @@ services:
     ports:
       - "6381:6379"   # cypher
       - "6382:6380"   # bolt
+    volumes:
+      - falkordb-data:/data
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -p 6379 ping | grep PONG"]
       interval: 10s
@@ -22,6 +24,13 @@ services:
     environment:
       FALKORDB_HOST: falkordb
       FALKORDB_PORT: "6379"
-      # ETHERSCAN_API_KEY: xxx   # optional, for the /api/ingest/etherscan endpoint
+      # Etherscan ingestion (keyless also works, just slower)
+      # ETHERSCAN_API_KEY: xxx
+    env_file:
+      - path: .env
+        required: false
     ports:
       - "8000:8000"
+
+volumes:
+  falkordb-data:
