@@ -6,7 +6,7 @@ Auditing is mostly tracing: who calls whom, which vulnerability patterns stack, 
 
 Built for Graph Hacks on FalkorDB.
 
-**Live demo:** [molecules-sacred-everyone-promotes.trycloudflare.com](https://molecules-sacred-everyone-promotes.trycloudflare.com) — the full app, seeded and queryable.
+**Live demo:** [pets-implies-move-discovered.trycloudflare.com](https://pets-implies-move-discovered.trycloudflare.com) — the full app, seeded and queryable.
 
 ## What's in the graph
 
